@@ -1,8 +1,12 @@
-import logo from "./logo.svg";
 import "./App.css";
+import Visualizer from "./components/Visualizer";
 
 function App() {
-  return <div className="App"></div>;
+  return (
+    <div className="App">
+      <Visualizer />
+    </div>
+  );
 }
 
 export default App;

@@ -1,0 +1,9 @@
+.navbar {
+  background-color: rgb(251, 166, 87);
+  top: 0;
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  height: 70px;
+  width: 100%;
+  margin-bottom: 10px;
+}

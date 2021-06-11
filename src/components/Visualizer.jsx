@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Node from "./node/Node";
-import { dijkstra } from "../algorithms/dijkstra";
+import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 import { createGrid, createWall } from "../grid";
 import NavBar from "./navbar/NavBar";
 import "./visualizer.css";
@@ -26,12 +26,12 @@ export default class Visualizer extends Component {
     this.setState({ grid });
   }
 
-  animateDijkstraPath(visitedNodesInOrder) {
+  animateDijkstraPath(visitedNodesInOrder, nodesInShortestPathOrder) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
-        // setTimeout(() => {
-        //   this.animateShortestPath(nodesInShortestPathOrder);
-        // }, 10 * i);
+        setTimeout(() => {
+          this.animateShortestPath(nodesInShortestPathOrder);
+        }, 10 * i);
         return;
       }
       setTimeout(() => {
@@ -45,7 +45,20 @@ export default class Visualizer extends Component {
     }
   }
 
-  animatePath(algorithm) {
+  animateShortestPath(nodesInShortestPathOrder) {
+    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+      setTimeout(() => {
+        const node = nodesInShortestPathOrder[i];
+        document.getElementById(`node-${node.row}-${node.col}`).className =
+          "node node-shortest-path";
+        document.getElementById(
+          `node-figure-${node.row}-${node.col}`
+        ).className = "node-figure node-shortest-path";
+      }, 50 * i);
+    }
+  }
+
+  findDestination(algorithm) {
     const { grid } = this.state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const destinationNode = grid[DESTINATION_NODE_ROW][DESTINATION_NODE_COL];
@@ -53,8 +66,9 @@ export default class Visualizer extends Component {
     switch (algorithm) {
       case dijkstra:
         const visitedNodesInOrder = dijkstra(grid, startNode, destinationNode);
-        // const nodesInShortestPathOrder = getNodesInShortestPathOrder(destinationNode);
-        this.animateDijkstraPath(visitedNodesInOrder);
+        const nodesInShortestPathOrder =
+          getNodesInShortestPathOrder(destinationNode);
+        this.animateDijkstraPath(visitedNodesInOrder, nodesInShortestPathOrder);
         break;
       default:
         break;
@@ -83,7 +97,7 @@ export default class Visualizer extends Component {
     return (
       <>
         <NavBar />
-        <button onClick={() => this.animatePath(dijkstra)}>
+        <button onClick={() => this.findDestination(dijkstra)}>
           Visualize Dijkstra's Algorithm
         </button>
         <div className="grid">

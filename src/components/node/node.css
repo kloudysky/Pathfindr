@@ -8,9 +8,11 @@
 
 .node-start {
   background-color: rgb(59, 192, 59);
+  cursor: pointer;
 }
 .node-finish {
   background-color: rgb(53, 53, 53);
+  cursor: pointer;
 }
 
 .node-figure {
@@ -85,7 +87,7 @@
 
   50% {
     transform: scale(1.2);
-    background-color: ;
+    background-color: #ed944d;
     border-color: #ed944d;
     outline-color: #ed944d;
   }

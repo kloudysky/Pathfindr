@@ -21,6 +21,41 @@ export const createWall = (grid, row, col) => {
   return newGrid;
 };
 
+export const changeStart = (grid, prevRow, prevCol, newRow, newCol, type) => {
+  const newGrid = grid.slice();
+  const prevStartNode = newGrid[prevRow][prevCol];
+  let regularNode, upgradedNode;
+  if (type === "start") {
+    regularNode = {
+      ...prevStartNode,
+      isStart: false,
+    };
+  } else {
+    regularNode = {
+      ...prevStartNode,
+      isDestination: false,
+    };
+  }
+
+  const node = newGrid[newRow][newCol];
+  if (type === "start") {
+    upgradedNode = {
+      ...node,
+      isStart: true,
+      isWall: false,
+    };
+  } else {
+    upgradedNode = {
+      ...node,
+      isDestination: true,
+      isWall: false,
+    };
+  }
+  newGrid[prevRow][prevCol] = regularNode;
+  newGrid[newRow][newCol] = upgradedNode;
+  return newGrid;
+};
+
 const createNode = (row, col, start, destination) => {
   return {
     row,

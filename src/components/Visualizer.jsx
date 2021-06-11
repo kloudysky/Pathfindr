@@ -1,14 +1,9 @@
 import React, { Component } from "react";
 import Node from "./node/Node";
 import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
-import { createGrid, createWall } from "../grid";
+import { createGrid, createWall, changeStart } from "../grid";
 import NavBar from "./navbar/NavBar";
 import "./visualizer.css";
-
-const START_NODE_ROW = 10;
-const START_NODE_COL = 15;
-const DESTINATION_NODE_ROW = 10;
-const DESTINATION_NODE_COL = 35;
 
 export default class Visualizer extends Component {
   constructor(props) {
@@ -16,12 +11,19 @@ export default class Visualizer extends Component {
     this.state = {
       grid: [],
       mouseDown: false,
+      startRow: 10,
+      startCol: 15,
+      destinationRow: 10,
+      destinationCol: 35,
+      mouseDownOnStart: false,
+      mouseDownOnDestination: false,
     };
   }
 
   componentDidMount() {
-    const start = [START_NODE_ROW, START_NODE_COL];
-    const destination = [DESTINATION_NODE_ROW, DESTINATION_NODE_COL];
+    const { startRow, startCol, destinationRow, destinationCol } = this.state;
+    const start = [startRow, startCol];
+    const destination = [destinationRow, destinationCol];
     const grid = createGrid(start, destination);
     this.setState({ grid });
   }
@@ -59,12 +61,13 @@ export default class Visualizer extends Component {
   }
 
   findDestination(algorithm) {
-    const { grid } = this.state;
-    const startNode = grid[START_NODE_ROW][START_NODE_COL];
-    const destinationNode = grid[DESTINATION_NODE_ROW][DESTINATION_NODE_COL];
+    const { grid, startRow, startCol, destinationRow, destinationCol } =
+      this.state;
+    const startNode = grid[startRow][startCol];
+    const destinationNode = grid[destinationRow][destinationCol];
 
     switch (algorithm) {
-      case dijkstra:
+      case "dijkstra":
         const visitedNodesInOrder = dijkstra(grid, startNode, destinationNode);
         const nodesInShortestPathOrder =
           getNodesInShortestPathOrder(destinationNode);
@@ -76,19 +79,61 @@ export default class Visualizer extends Component {
   }
 
   handleMouseDown(row, col) {
-    const grid = createWall(this.state.grid, row, col);
-    this.setState({ grid, mouseDown: true });
+    if (row === this.state.startRow && col === this.state.startCol) {
+      this.setState({ mouseDownOnStart: true });
+    } else if (
+      row === this.state.destinationRow &&
+      col === this.state.destinationCol
+    ) {
+      this.setState({ mouseDownOnDestination: true });
+    } else {
+      const grid = createWall(this.state.grid, row, col);
+      this.setState({ grid, mouseDown: true });
+    }
   }
 
   handleMouseEnter(row, col) {
+    const currentGrid = this.state.grid;
     if (this.state.mouseDown) {
-      const grid = createWall(this.state.grid, row, col);
+      const grid = createWall(currentGrid, row, col);
       this.setState({ grid });
+    } else if (this.state.mouseDownOnStart) {
+      const grid = changeStart(
+        currentGrid,
+        this.state.startRow,
+        this.state.startCol,
+        row,
+        col,
+        "start"
+      );
+      this.setState({ grid, startRow: row, startCol: col });
+    } else if (this.state.mouseDownOnDestination) {
+      const grid = changeStart(
+        currentGrid,
+        this.state.destinationRow,
+        this.state.destinationCol,
+        row,
+        col,
+        "destination"
+      );
+      this.setState({ grid, destinationRow: row, destinationCol: col });
     }
   }
 
   handleMouseUp() {
-    this.setState({ mouseDown: false });
+    this.setState({
+      mouseDown: false,
+      mouseDownOnStart: false,
+      mouseDownOnDestination: false,
+    });
+  }
+
+  resetGrid() {
+    console.log("hello");
+    const start = [10, 15];
+    const destination = [10, 35];
+    const grid = createGrid(start, destination);
+    this.setState({ grid });
   }
 
   render() {
@@ -96,8 +141,11 @@ export default class Visualizer extends Component {
 
     return (
       <>
-        <NavBar />
-        <button onClick={() => this.findDestination(dijkstra)}>
+        <NavBar
+          findDestination={this.findDestination}
+          resetGrid={() => this.resetGrid()}
+        />
+        <button onClick={() => this.findDestination("dijkstra")}>
           Visualize Dijkstra's Algorithm
         </button>
         <div className="grid">

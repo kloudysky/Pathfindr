@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Node from "./node/Node";
 import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
+import { bfs, getChildrenInShortestPathOrder } from "../algorithms/bfs";
 import { createGrid, createWall, changeStart } from "../grid";
 import NavBar from "./navbar/NavBar";
 import "./visualizer.css";
@@ -29,7 +30,7 @@ export default class Visualizer extends Component {
     this.setState({ grid });
   }
 
-  animateDijkstraPath(visitedNodesInOrder, nodesInShortestPathOrder) {
+  animatePath(visitedNodesInOrder, nodesInShortestPathOrder) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
@@ -99,7 +100,13 @@ export default class Visualizer extends Component {
         const visitedNodesInOrder = dijkstra(grid, startNode, destinationNode);
         const nodesInShortestPathOrder =
           getNodesInShortestPathOrder(destinationNode);
-        this.animateDijkstraPath(visitedNodesInOrder, nodesInShortestPathOrder);
+        this.animatePath(visitedNodesInOrder, nodesInShortestPathOrder);
+        break;
+      case "bfs":
+        const visitedBFSNodesInOrder = bfs(grid, startNode, destinationNode);
+        const nodesInShortestBFSPathOrder =
+          getChildrenInShortestPathOrder(destinationNode);
+        this.animatePath(visitedBFSNodesInOrder, nodesInShortestBFSPathOrder);
         break;
       default:
         break;

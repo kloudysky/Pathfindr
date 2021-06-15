@@ -24,9 +24,14 @@
 }
 
 .node-wall {
-  background-color: rgb(53, 53, 53);
-  border-color: rgb(53, 53, 53);
-  outline-color: rgb(53, 53, 53);
+  animation-name: buildWall;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
 }
 
 .node-visited {
@@ -97,5 +102,28 @@
     background-color: #ed944d;
     border-color: #ed944d;
     outline-color: #ed944d;
+  }
+}
+
+@keyframes buildWall {
+  0% {
+    transform: scale(0.6);
+    background-color: rgb(53, 53, 53);
+    border-color: rgb(53, 53, 53);
+    outline-color: rgb(53, 53, 53);
+  }
+
+  50% {
+    transform: scale(1.2);
+    background-color: rgb(53, 53, 53);
+    border-color: rgb(53, 53, 53);
+    outline-color: rgb(53, 53, 53);
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: rgb(53, 53, 53);
+    border-color: rgb(53, 53, 53);
+    outline-color: rgb(53, 53, 53);
   }
 }

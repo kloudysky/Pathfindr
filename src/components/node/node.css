@@ -3,7 +3,7 @@
   height: 25px;
   outline: 1px solid rgba(0, 190, 218, 0.75);
   display: inline-block;
-  margin: 2px;
+  margin: 0 2px 0 2px;
 }
 
 .node-start {
@@ -16,7 +16,7 @@
 }
 
 .node-figure {
-  border: 1px solid rgba(0, 190, 218, 0.75);
+  /* border: 1px solid rgba(0, 190, 218, 0.75); */
   border-radius: 100%;
   z-index: 1;
   height: 90%;
@@ -24,9 +24,9 @@
 }
 
 .node-wall {
-  background-color: rgb(1, 1, 105);
-  border-color: rgb(1, 1, 105);
-  outline-color: rgb(1, 1, 105);
+  background-color: rgb(53, 53, 53);
+  border-color: rgb(53, 53, 53);
+  outline-color: rgb(53, 53, 53);
 }
 
 .node-visited {

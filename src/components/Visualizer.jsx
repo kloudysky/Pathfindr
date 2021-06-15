@@ -17,6 +17,7 @@ export default class Visualizer extends Component {
       destinationCol: 35,
       mouseDownOnStart: false,
       mouseDownOnDestination: false,
+      pathFound: false,
     };
   }
 
@@ -57,10 +58,37 @@ export default class Visualizer extends Component {
           `node-figure-${node.row}-${node.col}`
         ).className = "node-figure node-shortest-path";
       }, 50 * i);
+      this.setState({ pathFound: true });
     }
   }
 
-  findDestination(algorithm) {
+  resetNodes(grid) {
+    grid.forEach((row, rowIdx) => {
+      row.forEach((node, nodeIdx) => {
+        if (node.isStart === false && node.isDestination === false) {
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node";
+          document.getElementById(
+            `node-figure-${node.row}-${node.col}`
+          ).className = "node-figure";
+        } else if (node.isStart === true) {
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node";
+          document.getElementById(
+            `node-figure-${node.row}-${node.col}`
+          ).className = "node-figure node-start";
+        } else if (node.isDestination === true) {
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node";
+          document.getElementById(
+            `node-figure-${node.row}-${node.col}`
+          ).className = "node-figure node-finish";
+        }
+      });
+    });
+  }
+
+  handleFindDestination(algorithm) {
     const { grid, startRow, startCol, destinationRow, destinationCol } =
       this.state;
     const startNode = grid[startRow][startCol];
@@ -79,16 +107,20 @@ export default class Visualizer extends Component {
   }
 
   handleMouseDown(row, col) {
-    if (row === this.state.startRow && col === this.state.startCol) {
-      this.setState({ mouseDownOnStart: true });
-    } else if (
-      row === this.state.destinationRow &&
-      col === this.state.destinationCol
-    ) {
-      this.setState({ mouseDownOnDestination: true });
+    if (this.state.pathFound === false) {
+      if (row === this.state.startRow && col === this.state.startCol) {
+        this.setState({ mouseDownOnStart: true });
+      } else if (
+        row === this.state.destinationRow &&
+        col === this.state.destinationCol
+      ) {
+        this.setState({ mouseDownOnDestination: true });
+      } else {
+        const grid = createWall(this.state.grid, row, col);
+        this.setState({ grid, mouseDown: true });
+      }
     } else {
-      const grid = createWall(this.state.grid, row, col);
-      this.setState({ grid, mouseDown: true });
+      this.handleResetGrid();
     }
   }
 
@@ -128,11 +160,23 @@ export default class Visualizer extends Component {
     });
   }
 
-  resetGrid() {
+  handleResetGrid() {
     console.log("hello");
+    this.setState({
+      grid: [],
+      mouseDown: false,
+      startRow: 10,
+      startCol: 15,
+      destinationRow: 10,
+      destinationCol: 35,
+      mouseDownOnStart: false,
+      mouseDownOnDestination: false,
+      pathFound: false,
+    });
     const start = [10, 15];
     const destination = [10, 35];
     const grid = createGrid(start, destination);
+    this.resetNodes(grid);
     this.setState({ grid });
   }
 
@@ -142,12 +186,12 @@ export default class Visualizer extends Component {
     return (
       <>
         <NavBar
-          findDestination={this.findDestination}
-          resetGrid={() => this.resetGrid()}
+          onFindDestination={(algo) => this.handleFindDestination(algo)}
+          onResetGrid={() => this.handleResetGrid()}
         />
-        <button onClick={() => this.findDestination("dijkstra")}>
+        {/* <button onClick={() => this.findDestination("dijkstra")}>
           Visualize Dijkstra's Algorithm
-        </button>
+        </button> */}
         <div className="grid">
           {grid.map((row, rowIdx) => {
             return (

@@ -8,19 +8,31 @@ export class NavBar extends Component {
       algorithm: "dijkstra",
     };
   }
+
+  handleAlgorithm() {}
+
   render() {
     return (
       <div className="navbar">
         <div className="dropdown">
           <button class="dropbtn">Algorithm</button>
           <div class="dropdown-content">
-            <a href="#">Dijkstra</a>
-            <a href="#">Link 2</a>
-            <a href="#">Link 3</a>
+            <a href="#" value="BFS" onClick={() => this.handleAlgorithm()}>
+              Breadth First Search
+            </a>
+            <a href="#" value="DFS" onClick={() => this.handleAlgorithm()}>
+              Depth First Search
+            </a>
+            <a href="#" value="Bijkstra" onClick={() => this.handleAlgorithm()}>
+              Dijkstra
+            </a>
           </div>
         </div>
-        <button class="findbtn">{`Use ${this.state.algorithm}`}</button>
-        <button onClick={() => this.props.resetGrid()} class="findbtn">
+        <button
+          class="findbtn"
+          onClick={() => this.props.onFindDestination(this.state.algorithm)}
+        >{`Use ${this.state.algorithm}`}</button>
+        <button onClick={() => this.props.onResetGrid()} class="findbtn">
           Reset
         </button>
       </div>
